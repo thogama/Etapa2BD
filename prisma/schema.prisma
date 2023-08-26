@@ -10,22 +10,24 @@ datasource db {
 model banco {
   id    Int     @id @default(autoincrement())
   nome  String  @unique(map: "nome_unique") @db.VarChar(255)
-  caixa Float?
+  caixa Float
   conta conta[]
 }
 
 model cliente {
   id    Int     @id @default(autoincrement())
   nome  String  @db.VarChar(255)
-  cpf   String? @unique(map: "cpf_unique") @db.VarChar
+  cpf   String  @unique(map: "cpf_unique") @db.VarChar
   conta conta[]
 }
 
 model conta {
-  cliente_id Int?
-  banco_id   Int?
-  id         Int      @id @default(autoincrement())
-  saldo      Float?
-  banco      banco?   @relation(fields: [banco_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  cliente    cliente? @relation(fields: [cliente_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  cliente_id Int
+  banco_id   Int
+  id         Int     @id @default(autoincrement())
+  saldo      Float
+  banco      banco   @relation(fields: [banco_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  cliente    cliente @relation(fields: [cliente_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@unique([cliente_id, banco_id], name: "unique_cliente_banco") // Restrição de chave única para cliente_id e banco_id
 }

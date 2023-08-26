@@ -25,7 +25,7 @@ router.post("/banco", async (req, res) => {
 
 router.get("/banco/:nome", async (req, res) => {
     const nome = req.params.nome;
-    const banco = await prisma.banco.findFirst({
+    const banco = await prisma.banco.findUnique({
         where: {
             nome: nome
         }
@@ -38,49 +38,41 @@ router.get("/banco/:nome", async (req, res) => {
 router.put("/banco/:nome", async (req, res) => {
     const nome = req.params.nome;
     const caixa = req.body.caixa
-    const banco = await prisma.banco.findFirst({
+
+
+    let novo = await prisma.banco.update({
+        data: {
+            caixa: caixa,
+
+        },
         where: {
             nome: nome
         }
     })
 
-    if (banco) {
-        let novo = await prisma.banco.update({
-            data: {
-                caixa: caixa,
-
-            },
-            where: {
-                id: banco.id
-            }
-        })
+    if (novo) {
         res.send(novo)
+
     }
-    else {
+    else
         res.send("Nao existe este Banco")
-    }
+
 
 })
 
 router.delete("/banco/:nome", async (req, res) => {
     const nome = req.params.nome;
-    const banco = await prisma.banco.findFirst({
+
+
+    await prisma.banco.delete({
         where: {
             nome: nome
         }
-    })
-
-    if (banco) {
-        await prisma.banco.delete({
-            where: {
-                id: banco.id
-            }
-        })
+    }).then(() => {
         res.send("Deletado")
-    }
-    else {
+    }).catch(() => {
         res.send("Nao existe este banco")
-    }
+    })
 
 })
 export default router

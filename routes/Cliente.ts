@@ -25,7 +25,7 @@ router.post("/cliente", async (req, res) => {
 
 router.get("/cliente/:cpf", async (req, res) => {
     const cpf = req.params.cpf;
-    const cliente = await prisma.cliente.findFirst({
+    const cliente = await prisma.cliente.findUnique({
         where: {
             cpf: cpf
         }
@@ -38,49 +38,42 @@ router.get("/cliente/:cpf", async (req, res) => {
 router.put("/cliente/:cpf", async (req, res) => {
     const cpf = req.params.cpf;
     const nome = req.body.nome
-    const cliente = await prisma.cliente.findFirst({
+
+
+    let novo = await prisma.cliente.update({
+        data: {
+            nome: nome,
+
+        },
         where: {
             cpf: cpf
         }
     })
-
-    if (cliente) {
-        let novo = await prisma.cliente.update({
-            data: {
-                nome: nome,
-
-            },
-            where: {
-                id: cliente.id
-            }
-        })
+    if (novo) {
         res.send(novo)
     }
-    else {
-        res.send("Nao existe ninguem com este cpf")
-    }
+    else res.send("Nao existe ninguem com este cpf")
+
 
 })
 
 router.delete("/cliente/:cpf", async (req, res) => {
     const cpf = req.params.cpf;
-    const cliente = await prisma.cliente.findFirst({
+    await prisma.cliente.delete({
         where: {
             cpf: cpf
         }
+    }).then(() => {
+        res.send("Deletado")
+
+    }).catch(() => {
+        res.send("Nao existe ninguem com este cpf")
+
     })
 
-    if (cliente) {
-        await prisma.cliente.delete({
-            where: {
-                id: cliente.id
-            }
-        })
-        res.send("Deletado")
-    }
-    else {
-        res.send("Nao existe ninguem com este cpf")
-    }
+
+
 
 })
+
 export default router
