@@ -7,9 +7,25 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model aluno {
+model banco {
+  id    Int     @id @default(autoincrement())
+  nome  String  @unique(map: "nome_unique") @db.VarChar(255)
+  caixa Float?
+  conta conta[]
+}
+
+model cliente {
   id    Int     @id @default(autoincrement())
   nome  String  @db.VarChar(255)
-  idade Int?
-  curso String? @db.VarChar(255)
+  cpf   String? @unique(map: "cpf_unique") @db.VarChar
+  conta conta[]
+}
+
+model conta {
+  cliente_id Int?
+  banco_id   Int?
+  id         Int      @id @default(autoincrement())
+  saldo      Float?
+  banco      banco?   @relation(fields: [banco_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  cliente    cliente? @relation(fields: [cliente_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
