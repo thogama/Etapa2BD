@@ -1,24 +1,23 @@
 -- Criação da tabela banco
 CREATE TABLE banco (
-    id serial PRIMARY KEY,
-    nome VARCHAR(255) UNIQUE,
-    caixa FLOAT
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(255) NOT NULL,
+    caixa DECIMAL(10, 2) NOT NULL
 );
 
 -- Criação da tabela cliente
 CREATE TABLE cliente (
-    id serial PRIMARY KEY,
-    nome VARCHAR(255),
-    cpf VARCHAR UNIQUE
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(255) NOT NULL,
+    cpf VARCHAR(14) NOT NULL
 );
 
 -- Criação da tabela conta
 CREATE TABLE conta (
-    cliente_id INT,
-    banco_id INT,
-    id serial PRIMARY KEY,
-    saldo FLOAT,
-    FOREIGN KEY (cliente_id) REFERENCES cliente (id),
-    FOREIGN KEY (banco_id) REFERENCES banco (id),
-    CONSTRAINT unique_cliente_banco UNIQUE (cliente_id, banco_id)
+    id SERIAL PRIMARY KEY,
+    cliente_id INT NOT NULL,
+    banco_id INT NOT NULL,
+    saldo DECIMAL(10, 2) NOT NULL,
+    FOREIGN KEY (cliente_id) REFERENCES cliente(id),
+    FOREIGN KEY (banco_id) REFERENCES banco(id)
 );
